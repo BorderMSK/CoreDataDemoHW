@@ -13,6 +13,7 @@ final class TaskListViewController: UITableViewController {
     
     private static let cellId = "cell"
     private var tasks: [Task] = []
+    let task = NewTaskViewController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,11 +69,12 @@ final class TaskListViewController: UITableViewController {
         present(newTaskVC, animated: true)
     }
     
-    private func fetchData() {
+     func fetchData() {
         let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
         
         do {
             tasks = try viewContext.fetch(fetchRequest)
+            self.tableView.reloadData()
         } catch let error {
             print(error)
         }
@@ -117,16 +119,8 @@ extension TaskListViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let task = NewTaskViewController()
         task.editTaskTextField = tasks[indexPath.row]
         present(task, animated: true, completion: nil)
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        do {
-            try self.viewContext.save()
-        }
-        catch let error {
-            print(error)
-        }
     }
 }
